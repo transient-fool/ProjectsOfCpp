@@ -1,0 +1,70 @@
+template<typename T, typename... Args>
+[[nodiscard]] std::unique_ptr<T> make_unique_resource(Args&&... args) {
+    return std::make_unique<T>(std::forward<Args>(args)...);
+}
+
+class DatabaseConnection {
+    // 数据库连接
+public:
+    void query(const std::string& sql) { /* 执行查询 */ }
+};
+
+int main() {
+    // 创建数据库连接
+    auto db = make_unique_resource<DatabaseConnection>("localhost", "user", "pass");
+    
+    make_unique_resource<DatabaseConnection>("localhost", "user", "pass");
+    // ⚠️ 警告：数据库连接创建后立即断开！
+    
+    db->query("SELECT * FROM users");  // ✅ 正确使用
+}
+
+
+错误码包装：
+enum class [[nodiscard]] Status {
+    Success,
+    FileNotFound,
+    PermissionDenied,
+    InvalidFormat
+};
+
+Status loadConfig(const std::string& path) {
+    // 加载配置文件
+    return Status::Success;
+}
+
+Status initializeSystem() {
+    if (auto status = loadConfig("config.json"); status != Status::Success) {
+        return status;  // ✅ 传播错误
+    }
+    return Status::Success;
+}
+
+int main() {
+    initializeSystem();  // ⚠️ 警告：忽略了初始化状态
+}
+
+
+rall:
+enum class [[nodiscard]] Status {
+    Success,
+    FileNotFound,
+    PermissionDenied,
+    InvalidFormat
+};
+
+Status loadConfig(const std::string& path) {
+    // 加载配置文件
+    return Status::Success;
+}
+
+Status initializeSystem() {
+    if (auto status = loadConfig("config.json"); status != Status::Success) {
+        return status;  // ✅ 传播错误
+    }
+    return Status::Success;
+}
+
+int main() {
+    initializeSystem();  // ⚠️ 警告：忽略了初始化状态
+}
