@@ -1,0 +1,10 @@
+[[noreturn]] void fatalError(const std::string& msg) {
+    std::cerr << "Fatal error: " << msg << std::endl;
+    std::terminate();  // 不会返回
+}
+
+int main() {
+    fatalError("System failure");
+    // 这行代码永远不会执行！
+    std::cout << "This will never be printed" << std::endl;
+}
