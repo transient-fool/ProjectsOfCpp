@@ -1,0 +1,21 @@
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string str = "Hello";
+    
+    const char* p1 = str.c_str();  // 正确
+    // char* p2 = str.c_str();       // 错误！返回的是 const char*
+    
+    // 为什么是 const？保护字符串内容不被意外修改
+    // p1[0] = 'h';  // 编译错误：不能通过 const 指针修改
+    
+    // 如果需要修改，需要拷贝
+    char* mutable_copy = new char[str.length() + 1];
+    strcpy(mutable_copy, str.c_str());
+    mutable_copy[0] = 'h';  // 可以修改拷贝
+    std::cout << mutable_copy << std::endl;
+    delete[] mutable_copy;
+    
+    return 0;
+}
