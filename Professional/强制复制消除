@@ -1,0 +1,18 @@
+struct Widget {
+    Widget() { std::cout << "Constructor\n"; }
+    ~Widget() { std::cout << "Destructor\n"; }
+    Widget(const Widget&) { std::cout << "Copy Constructor\n"; }
+    Widget(Widget&&) { std::cout << "Move Constructor\n"; }
+};
+
+Widget createWidget() {
+    return Widget();  // C++17 保证不会调用拷贝/移动构造函数
+}
+
+int main() {
+    Widget w = createWidget();  // 直接构造，无额外拷贝
+    return 0;
+}
+// 输出：Constructor
+//       Destructor
+// （没有 Copy/Move Constructor 的输出）
