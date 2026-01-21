@@ -1,0 +1,53 @@
+#include <iostream>
+
+void print(int& value) {
+    std::cout << "Non-const: " << value << std::endl;
+}
+
+void print(const int& value) {
+    std::cout << "Const: " << value << std::endl;
+}
+
+int main() {
+    int x = 10;
+    const int y = 20;
+    
+    // 1. 去除 const（危险！）
+    const int* cp = &y;
+    int* p = const_cast<int*>(cp);  // 去除 const
+    // *p = 30;  // 未定义行为！修改 const 对象
+    
+    // 2. 添加 const（安全）
+    int* q = &x;
+    const int* cq = const_cast<const int*>(q);  // 添加 const
+    // *cq = 40;  // 编译错误，cq 是 const
+    
+    // 3. 调用不同版本的函数
+    print(x);              // 调用非 const 版本
+    print(const_cast<const int&>(x));  // 调用 const 版本
+    
+    return 0;
+}
+
+#include <utility>  // for std::as_const
+
+void process(std::string& str) {
+    std::cout << "Modifiable string\n";
+}
+
+void process(const std::string& str) {
+    std::cout << "Const string\n";
+}
+
+int main() {
+    std::string text = "Hello";
+    
+    process(text);              // 调用非 const 版本
+    process(std::as_const(text));  // 调用 const 版本
+    
+    // 与 auto 配合使用
+    auto& constRef = std::as_const(text);  // const std::string&
+    
+    return 0;
+}
+
