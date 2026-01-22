@@ -1,0 +1,19 @@
+#include <charconv>
+#include <iostream>
+
+int main() {
+    char buffer[10];
+    int value = 12345;
+    
+    // 将整数转换为字符
+    auto result = std::to_chars(buffer, buffer + 10, value);
+    
+    if (result.ec == std::errc{}) {
+        // 转换成功
+        std::cout << "写入的字符数: " << (result.ptr - buffer) << std::endl;  // 输出 5
+        
+        // 添加终止符，形成C风格字符串
+        *result.ptr = '\0';
+        std::cout << "结果: " << buffer << std::endl;  // 输出 "12345"
+    }
+}
